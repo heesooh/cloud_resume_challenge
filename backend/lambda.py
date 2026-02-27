@@ -6,14 +6,24 @@ table = dynamodb.Table('cloud_resume_challenge_visitor_count')
 
 def lambda_handler(event, context):
     response = table.update_item(
-        Key = {'id', 'vistor_counter'},
+        Key = {'id': 'vistor_counter'},
         UpdateExpression = 'ADD #c :inc',
         ExpressionAttributeNames = {'#c': 'count'},
-        ExpressionAttributeValues = {':inc': 1}
+        ExpressionAttributeValues = {':inc': 1},
         ReturnValues = "UPDATED_NEW"
     )
 
+    # 'boto3' converts DynamoDB numbers into 'Decimal' type, 
+    # thus convert to 'int' type before return
+    updated_count = int(response['Attributes']['count']) 
+
     return {
         'statusCode': 200,
-        'body': json.dumps(response['Attributes']['count'])
+        'headers': {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        },
+        'body': json.dumps({
+            'count': updated_count
+        })
     }
