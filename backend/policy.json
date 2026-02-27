@@ -1,0 +1,17 @@
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "AllowVisitorCounterUpdate",
+			"Effect": "Allow",
+			"Action": [
+				"dynamodb:UpdateItem",
+				"dynamodb:GetItem",
+				"dynamodb:PutItem"
+			],
+			"Resource": [
+				"arn:aws:dynamodb:REGION:ACCOUNT_ID:table/cloud_resume_challenge_visitor_count"
+			]
+		}
+	]
+}
