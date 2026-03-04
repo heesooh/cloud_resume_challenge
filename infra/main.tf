@@ -1,27 +1,3 @@
-# S3 Bucket
-resource "aws_s3_bucket" "resume_bucket" {
-    bucket = "cloud-resume-challenge-heesooh-tf"
-
-    force_destroy = true
-}
-
-resource "aws_s3_bucket_public_access_block" "resume_bucket_public_access_block" {
-    bucket = aws_s3_bucket.resume_bucket.id
-
-    block_public_acls       = true
-    block_public_policy     = true
-    ignore_public_acls      = true
-    restrict_public_buckets = true
-}
-
-resource "aws_s3_object" "resume_objects" {
-    bucket = aws_s3_bucket.resume_bucket.id
-
-    for_each = toset(var.resume_files_to_upload)
-    key      = each.value
-    source   = "../frontend/${each.value}"
-}
-
 # DynamoDB Table
 resource "aws_dynamodb_table" "visitor_count_table" {
     name = "cloud-resume-challenge-visitor-count-tf"
@@ -123,4 +99,41 @@ resource "aws_apigatewayv2_stage" "visitor_count_api_stage" {
     api_id = aws_apigatewayv2_api.visitor_count_api.id
     name   = "$default"
     auto_deploy = true 
+}
+
+locals {
+    counter_script = templatefile("../frontend/script.js.tpl", {
+        api_url = aws_apigatewayv2_stage.visitor_count_api_stage.invoke_url
+    })
+}
+
+# S3 Bucket
+resource "aws_s3_bucket" "resume_bucket" {
+    bucket = "cloud-resume-challenge-heesooh-tf"
+
+    force_destroy = true
+}
+
+resource "aws_s3_bucket_public_access_block" "resume_bucket_public_access_block" {
+    bucket = aws_s3_bucket.resume_bucket.id
+
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+}
+
+resource "aws_s3_object" "resume_objects" {
+    bucket = aws_s3_bucket.resume_bucket.id
+
+    for_each = toset(var.resume_files_to_upload)
+    key      = each.value
+    source   = "../frontend/${each.value}"
+}
+
+resource "aws_s3_object" "resume_object_script" {
+    bucket = aws_s3_bucket.resume_bucket.id
+
+    key     = "script.js"
+    content = local.counter_script
 }

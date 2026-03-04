@@ -5,7 +5,6 @@ variable "aws_region" {
 variable "resume_files_to_upload" {
     default = [
         "index.html",
-        "styles.css",
-        "script.js"
+        "styles.css"
     ]
 }
