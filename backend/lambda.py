@@ -1,8 +1,10 @@
 import json
 import boto3
+import os
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('cloud_resume_challenge_visitor_count')
+table_name = os.environ.get('DYNAMODB_TABLE_NAME')
+table = dynamodb.Table(table_name)
 
 def lambda_handler(event, context):
     response = table.update_item(
