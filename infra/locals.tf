@@ -1,7 +1,7 @@
 locals {
     name_prefix = "${var.project_name}"
     
-    # S3 object Content Type Lookup Table
+    # S3 Object Content Type Lookup Table
     content_types = {
         ".html" = "text/html"
         ".css"  = "text/css"
