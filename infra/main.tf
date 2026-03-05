@@ -69,11 +69,16 @@ data "archive_file" "lambda_zip" {
 # Lambda Function
 resource "aws_lambda_function" "visitor_count_lambda" {
     function_name = "cloud-resume-challenge-counter-tf"
-    role = aws_iam_role.lambda_role.arn
-
+    role     = aws_iam_role.lambda_role.arn
     filename = data.archive_file.lambda_zip.output_path
-    handler = "lambda.lambda_handler"
-    runtime = "python3.14"
+    handler  = "lambda.lambda_handler"
+    runtime  = "python3.14"
+
+    environment {
+        variables = {
+            DYNAMODB_TABLE_NAME = aws_dynamodb_table.visitor_count_table.name
+        }
+    }
 }
 
 # API Gateway
