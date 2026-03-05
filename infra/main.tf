@@ -1,6 +1,11 @@
+# TODO: Refactor
+# Address .ico and script.js issue on browser
+# Add route53
+# Update readme.md 
+
 # DynamoDB Table
 resource "aws_dynamodb_table" "visitor_count_table" {
-    name = "cloud-resume-challenge-visitor-count-tf"
+    name = "${local.name_prefix}-visitor-count"
     billing_mode = "PAY_PER_REQUEST"
     hash_key = "id"
     
@@ -26,7 +31,7 @@ data "aws_iam_policy_document" "lambda_trust_policy" {
 
 # Lambda Execution Role
 resource "aws_iam_role" "lambda_role" {
-    name = "cloud-resume-challenge-lambda"
+    name = "${local.name_prefix}-lambda-role"
     assume_role_policy = data.aws_iam_policy_document.lambda_trust_policy.json
 }
 
@@ -53,7 +58,7 @@ data "aws_iam_policy_document" "dynamodb_read_write_policy" {
 
 # Create DynamoDB Inline Policy
 resource "aws_iam_role_policy" "lambda_dynamodb_inline_policy" {
-    name   = "dynamodb-read-write-access"
+    name   = "DynamoDBReadWriteAccess"
     role   = aws_iam_role.lambda_role.id
 
     policy = data.aws_iam_policy_document.dynamodb_read_write_policy.json
@@ -68,11 +73,11 @@ data "archive_file" "lambda_zip" {
 
 # Lambda Function
 resource "aws_lambda_function" "visitor_count_lambda" {
-    function_name = "cloud-resume-challenge-counter-tf"
+    function_name = "${local.name_prefix}-lambda-function"
     role     = aws_iam_role.lambda_role.arn
     filename = data.archive_file.lambda_zip.output_path
     handler  = "lambda.lambda_handler"
-    runtime  = "python3.14"
+    runtime  = var.python_runtime
 
     environment {
         variables = {
@@ -83,7 +88,7 @@ resource "aws_lambda_function" "visitor_count_lambda" {
 
 # API Gateway
 resource "aws_apigatewayv2_api" "visitor_count_api" {
-    name          = "cloud_resume_challenge_tf_api"
+    name          = "${local.name_prefix}-api-gateway"
     protocol_type = "HTTP"
 }
 
@@ -118,9 +123,15 @@ resource "aws_lambda_permission" "lambda_allow_api_gateway" {
     source_arn = "${aws_apigatewayv2_api.visitor_count_api.execution_arn}/$default/GET/count"
 }
 
+resource "random_string" "suffix" {
+    length  = 8
+    special = false
+    upper   = false
+}
+
 # S3 Bucket
 resource "aws_s3_bucket" "resume_bucket" {
-    bucket = "cloud-resume-challenge-heesooh-tf"
+    bucket = "${local.name_prefix}-bucket-${random_string.suffix.result}"
 
     force_destroy = true
 }
@@ -154,7 +165,7 @@ resource "aws_s3_object" "resume_object_script" {
 
 # CloudFront Distribution
 resource "aws_cloudfront_origin_access_control" "resume_bucket_oac" {
-    name = "cloud_resume_bucket_oac"
+    name = "${local.name_prefix}-cloudfront-oac"
     origin_access_control_origin_type = "s3"
     signing_behavior = "always"
     signing_protocol = "sigv4"
@@ -222,9 +233,4 @@ data "aws_iam_policy_document" "resume_bucket_policy" {
 resource "aws_s3_bucket_policy" "resume_bucket_policy_attachment" {
     bucket = aws_s3_bucket.resume_bucket.id
     policy = data.aws_iam_policy_document.resume_bucket_policy.json
-}
-
-# Output CloudFront Endpoint to Verify
-output "cloudfront_endpoint" {
-    value = aws_cloudfront_distribution.resume_distribution.domain_name
 }
