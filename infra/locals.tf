@@ -1,16 +1,7 @@
-variable "aws_region" {
-    default = "us-east-1"
-}
-
-variable "resume_files_to_upload" {
-    default = [
-        "index.html",
-        "styles.css"
-    ]
-}
-
 locals {
-    # S3 object Content Type Lookup Table
+    name_prefix = "${var.project_name}"
+    
+    # S3 Object Content Type Lookup Table
     content_types = {
         ".html" = "text/html"
         ".css"  = "text/css"
