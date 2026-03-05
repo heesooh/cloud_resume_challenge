@@ -1,8 +1,3 @@
-# TODO: Refactor
-# Address .ico and script.js issue on browser
-# Add route53
-# Update readme.md 
-
 # DynamoDB Table
 resource "aws_dynamodb_table" "visitor_count_table" {
     name = "${local.name_prefix}-visitor-count"
@@ -39,6 +34,12 @@ resource "aws_iam_role" "lambda_role" {
 resource "aws_iam_role_policy_attachment" "lambda_basic_role_attachment" {
     role = aws_iam_role.lambda_role.id
     policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+# Reduce CloudWatch Log Rentiontion Period to Reduce Cost
+resource "aws_cloudwatch_log_group" "lambda_log_group" {
+    name = "/aws/lambda/${aws_lambda_function.visitor_count_lambda.function_name}"
+    retention_in_days = 7
 }
 
 # DynamoDB Read/Write Policy
