@@ -2,7 +2,7 @@ import json
 import boto3
 
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('cloud_resume_challenge_visitor_count')
+table = dynamodb.Table('cloud-resume-challenge-visitor-count-tf')
 
 def lambda_handler(event, context):
     response = table.update_item(
