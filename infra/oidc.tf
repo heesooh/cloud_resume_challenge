@@ -60,6 +60,21 @@ data "aws_iam_policy_document" "github_permissions_policy" {
       "arn:aws:logs:*:*:log-group:/aws/lambda/${local.name_prefix}-*",
     ]
   }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "cloudfront:ListCachePolicies",
+      "cloudfront:GetCachePolicy",
+      "cloudfront:ListDistributions",
+      "cloudfront:ListOriginAccessControls",
+      "iam:ListPolicies",
+      "iam:GetPolicy",
+      "iam:GetRole"
+    ]
+
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_role_policy" "github_inline_policy" {
