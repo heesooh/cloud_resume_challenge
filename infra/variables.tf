@@ -1,16 +1,11 @@
 variable "aws_region" {
-    type    = string
-    default = "us-east-1"
-}
-
-variable "aws_profile" {
-    type    = string
-    default = "general"
+  type    = string
+  default = "us-east-1"
 }
 
 variable "project_name" {
-    type    = string
-    default = "cloud-resume-challenge-tf"
+  type    = string
+  default = "cloud-resume-challenge-tf"
 }
 
 variable "python_runtime" {
@@ -18,8 +13,8 @@ variable "python_runtime" {
 }
 
 variable "resume_files_to_upload" {
-    default = [
-        "index.html",
-        "styles.css"
-    ]
+  default = [
+    "index.html",
+    "styles.css"
+  ]
 }
