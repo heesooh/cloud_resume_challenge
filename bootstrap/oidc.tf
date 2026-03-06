@@ -59,7 +59,7 @@ data "aws_iam_policy_document" "github_permissions_policy" {
       "arn:aws:dynamodb:*:*:table/${local.name_prefix}-*",
       "arn:aws:iam::*:role/${local.name_prefix}-*",
       "arn:aws:logs:*:*:log-group:/aws/lambda/${local.name_prefix}-*",
-      "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/*"
+      "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:*"
     ]
   }
 
@@ -71,9 +71,12 @@ data "aws_iam_policy_document" "github_permissions_policy" {
       "cloudfront:GetCachePolicy",
       "cloudfront:ListDistributions",
       "cloudfront:ListOriginAccessControls",
+      "cloudfront:GetOriginAccessControl",
       "iam:ListPolicies",
       "iam:GetPolicy",
-      "iam:GetRole"
+      "iam:GetRole",
+      "apigateway:GET",
+      "logs:DescribeLogGroups"
     ]
     resources = ["*"]
   }
