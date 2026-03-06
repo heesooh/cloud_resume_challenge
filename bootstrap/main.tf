@@ -5,20 +5,14 @@ terraform {
       version = "~> 6.0"
     }
   }
-
-  backend "s3" {
-    bucket = "cloud-resume-challenge-tf-state-bucket-heesooh"
-    key    = "terraform.tfstate"
-    region = "us-east-1"
-  }
 }
 
 provider "aws" {
-  region = var.aws_region
+  region = local.aws_region
 
   default_tags {
     tags = {
-      Project   = var.project_name
+      Project   = local.name_prefix
       ManagedBY = "Terraform"
     }
   }

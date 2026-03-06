@@ -36,7 +36,11 @@ resource "aws_iam_role" "github_actions_role" {
   assume_role_policy = data.aws_iam_policy_document.github_trust_policy.json
 }
 
+# Get Current AWS Account ID
+data "aws_caller_identity" "current" {}
+
 data "aws_iam_policy_document" "github_permissions_policy" {
+  # Grant Github Role Access to All Resrouces Deployed  
   statement {
     effect = "Allow"
     actions = [
@@ -48,19 +52,18 @@ data "aws_iam_policy_document" "github_permissions_policy" {
       "iam:*",
       "logs:*",
     ]
-
     resources = [
-      "${aws_s3_bucket.resume_bucket.arn}",
-      "${aws_s3_bucket.resume_bucket.arn}/*",
-      "${aws_cloudfront_distribution.resume_distribution.arn}",
-      "${aws_lambda_function.visitor_count_lambda.arn}",
-      "${aws_dynamodb_table.visitor_count_table.arn}",
-      "${aws_apigatewayv2_api.visitor_count_api.arn}/*",
+      "arn:aws:s3:::${local.name_prefix}-*",
+      "arn:aws:s3:::${local.name_prefix}-*/*",
+      "arn:aws:lambda:*:*:function:${local.name_prefix}-*",
+      "arn:aws:dynamodb:*:*:table/${local.name_prefix}-*",
       "arn:aws:iam::*:role/${local.name_prefix}-*",
       "arn:aws:logs:*:*:log-group:/aws/lambda/${local.name_prefix}-*",
+      "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:*"
     ]
   }
 
+  # Grant Github Role Additional Access to Find CloudFornt Managed Caching Policy
   statement {
     effect = "Allow"
     actions = [
@@ -68,12 +71,28 @@ data "aws_iam_policy_document" "github_permissions_policy" {
       "cloudfront:GetCachePolicy",
       "cloudfront:ListDistributions",
       "cloudfront:ListOriginAccessControls",
+      "cloudfront:GetOriginAccessControl",
       "iam:ListPolicies",
       "iam:GetPolicy",
-      "iam:GetRole"
+      "iam:GetRole",
+      "apigateway:GET",
+      "logs:DescribeLogGroups"
     ]
-
     resources = ["*"]
+  }
+
+  # Grant Github Role Access to Terraform State Bucket
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket",
+      "s3:GetObject",
+      "s3:PutObject"
+    ]
+    resources = [
+      "arn:aws:s3:::${aws_s3_bucket.terraform_state.bucket}",
+      "arn:aws:s3:::${aws_s3_bucket.terraform_state.bucket}/*"
+    ]
   }
 }
 
