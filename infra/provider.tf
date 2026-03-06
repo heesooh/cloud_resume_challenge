@@ -1,20 +1,20 @@
 terraform {
-    required_providers {
-        aws = {
-            source  = "hashicorp/aws"
-            version = "~> 6.0"
-        }
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 6.0"
     }
+  }
 }
 
 provider "aws" {
-    region = var.aws_region
-    profile = var.aws_profile
+  region  = var.aws_region
+  profile = var.aws_profile
 
-    default_tags {
-      tags = {
-        Project   = var.project_name
-        ManagedBY = "Terraform"
-      }
+  default_tags {
+    tags = {
+      Project   = var.project_name
+      ManagedBY = "Terraform"
     }
+  }
 }
