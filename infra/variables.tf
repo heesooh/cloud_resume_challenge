@@ -11,10 +11,3 @@ variable "project_name" {
 variable "python_runtime" {
   default = "python3.14"
 }
-
-variable "resume_files_to_upload" {
-  default = [
-    "index.html",
-    "styles.css"
-  ]
-}

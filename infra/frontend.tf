@@ -23,21 +23,24 @@ resource "aws_s3_bucket_public_access_block" "resume_bucket_public_access_block"
   restrict_public_buckets = true
 }
 
-# Upload Resume Objects Listed On "resume_files_to_upload"
+# Upload Static Portfolio Site in "../frontend/out/*" 
 resource "aws_s3_object" "resume_objects" {
-  bucket = aws_s3_bucket.resume_bucket.id
+  for_each = fileset("${path.module}/../frontend/out", "**")
 
-  for_each     = toset(var.resume_files_to_upload)
-  key          = each.value
-  source       = "../frontend/${each.value}"
-  content_type = lookup(local.content_types, regex("\\.[^.]+$", each.value), "text/plain")
+  bucket = aws_s3_bucket.resume_bucket.id
+  key    = each.value
+  source = "${path.module}/../frontend/out/${each.value}"
+  content_type = lookup(
+  local.content_types, element(split(".", each.value), length(split(".", each.value)) - 1), "text/plain")
+
+  etag = filemd5("${path.module}/../frontend/out/${each.value}")
 }
 
 # Upload Visitor Count Script to Resume Bucket
 resource "aws_s3_object" "resume_object_script" {
   bucket = aws_s3_bucket.resume_bucket.id
 
-  key          = "script.js"
+  key          = "resume/script.js"
   content      = local.counter_script
   content_type = "application/javascript"
 }
@@ -92,5 +95,11 @@ resource "aws_cloudfront_distribution" "resume_distribution" {
     geo_restriction {
       restriction_type = "none"
     }
+  }
+
+  custom_error_response {
+    error_code         = 403
+    response_code      = 200
+    response_page_path = "/index.html"
   }
 }
