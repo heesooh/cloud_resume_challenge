@@ -1,0 +1,89 @@
+body {
+	background: #4b7da5;
+	font-family: "Times New Roman", Times, serif;
+}
+
+.resume {
+    width: 80vw;
+	max-width: 900px;
+    height: 100vh;
+    margin: 0 auto;
+    background: white;
+    padding: 30px 5vw;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+.name {
+	font-family: "Times New Roman", serif;
+	font-size: 28px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.location {
+	font-family: "Times New Roman", serif;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: center;
+}
+
+.links {
+	text-align: center;
+	margin-top: 5px;
+	font-size: 12px;
+}
+
+.links a {
+	text-decoration: none;
+	color: #1155cc;
+}
+
+.section-title {
+	font-family: "Times New Roman", serif;
+	font-weight: bold;
+	font-size: 14px;
+	border-bottom: 1px solid black;
+	margin-top: 24px;
+	margin-bottom: 8px;
+	padding-bottom: 2px;
+}
+
+.row {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+}
+
+.row-left {
+	font-weight: bold;
+}
+
+.row-right {
+	white-space: nowrap;
+}
+
+.skill-row {
+	display: flex;
+	margin-bottom: 4px;
+}
+
+.skill-label {
+	width: 180px;
+	font-weight: bold;
+}
+
+.skill-content {
+	flex: 1;
+}
+
+ul {
+	margin-top: 4px;
+	margin-bottom: 8px;
+}
+
+li {
+	margin-bottom: 4px;
+	text-align: justify;
+}
