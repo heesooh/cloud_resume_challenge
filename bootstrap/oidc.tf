@@ -51,6 +51,9 @@ data "aws_iam_policy_document" "github_permissions_policy" {
       "s3:*",
       "iam:*",
       "logs:*",
+      "apigateway:POST",
+      "tag:TagResources",
+      "tag:UntagResources"
     ]
     resources = [
       "arn:aws:s3:::${local.name_prefix}-*",
@@ -59,7 +62,9 @@ data "aws_iam_policy_document" "github_permissions_policy" {
       "arn:aws:dynamodb:*:*:table/${local.name_prefix}-*",
       "arn:aws:iam::*:role/${local.name_prefix}-*",
       "arn:aws:logs:*:*:log-group:/aws/lambda/${local.name_prefix}-*",
-      "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:*"
+      "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:*",
+      "arn:aws:apigateway:us-east-1::/tags/*",
+      "arn:aws:apigateway:us-east-1::/apis/*"
     ]
   }
 
