@@ -1,6 +1,6 @@
 # Fully Automated Cloud Resume Challenge (AWS)
 A serverless, high-availability resume website built with **Next.js**, deployed via **Terraform**, and fully automated through **GitHub Actions**. 
-[**View the Live Site Here**](d3e7xk34l1lhzd.cloudfront.net)
+[**View the Live Site Here**](https://d3e7xk34l1lhzd.cloudfront.net)
 
 ## Project Overview
 This project moves beyond a simple static site to build a professional-grade cloud infrastructure adhering to modern DevOps best practices**:
