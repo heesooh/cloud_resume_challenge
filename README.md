@@ -18,7 +18,7 @@ This project moves beyond a simple static site to build a professional-grade clo
 ## The Architecture
 The AWS infrastructure follows the design outlined in the diagram below:
 
-[ARCHITECTURE IMAGE HERE]
+![Architecture Diagram](./img/architecture.svg)
 
 - The **Frontend** utilizes a private S3 bucket as an origin. By using Origin Access Control (OAC), the bucket is shielded from direct public access, ensuring it can only be reached via the CloudFront endpoint. This setup leverages global edge caching to significantly reduce latency.
 
@@ -255,10 +255,12 @@ resource "aws_cloudfront_distribution" "resume_distribution" {
 
 
 ## Challenges & Lessons Learned
+### No More "Console Magic"
 Transitioning from the AWS Console to Terraform revealed the "Console Magic" we often take for granted. In the console, AWS automatically attaches baseline permissions (like CloudWatch Logs for Lambda) and handles resource tagging behind the scenes.
 - With IaC, **every implicit permission must be made explicit**. I learned that managing infrastructure means managing the lifecycle of the deployment role itself.
 - I spent significant time auditing IAM Access Denied errors to realize that a deployment role doesn't just need permission to the resource ARN; it needs permission to hit the service collection endpoints (e.g., /apis and /tags) to actually provision and label those resources.
 
+### The Intelligence of Terraform
 I discovered that Terraform is far more than just a "list of resources"; it is an intelligent state engine. Understanding its advanced features allowed me to move from hard-coded configurations to a dynamic, scalable setup.
 - I successfully implemented a Remote S3 Backend, which allows Terraform to automatically sync state across different environments (Local vs. GitHub Actions) without manual intervention.
 ```
